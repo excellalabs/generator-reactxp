@@ -1,0 +1,14 @@
+
+import 'react-native'
+import * as React from 'react'
+import { storiesOf, linkTo } from '@storybook/react-native'
+import { action } from '@storybook/addon-actions'
+
+import { <%= options.componentName %>Base } from './<%= options.componentName %>'
+
+const pressAction = action('<%= options.componentName %>.onPress')
+
+storiesOf('<%= options.componentName %>', module)
+  .add('display', () => (
+    <<%= options.componentName %>Base name='World' onPress={pressAction} />
+  ))

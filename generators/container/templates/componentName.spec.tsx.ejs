@@ -1,6 +1,7 @@
 
 import 'jest'
 import 'react-native'
+import mockStore from 'redux-mock-store'
 import * as React from 'react'
 import * as RX from 'reactxp'
 import * as renderer from 'react-test-renderer'
@@ -9,10 +10,16 @@ import Adapter from 'enzyme-adapter-react-16'
 configure({ adapter: new Adapter() })
 
 import Original<%= options.componentName %> from '.'
+import { <%= options.componentName %>Base as Original<%= options.componentName %>Base } from './<%= options.componentName %>'
 
 const importModule = (): typeof Original<%= options.componentName %> => {
   const module = require('.').default
   return module
+}
+
+const importBase = (): typeof Original<%= options.componentName %>Base => {
+  const moduleBase = require('./<%= options.componentName %>').<%= options.componentName %>Base
+  return moduleBase
 }
 
 const mockedComponents = [
@@ -22,6 +29,19 @@ const defaultMocks = [
 ]
 
 const allMocks = mockedComponents.concat(defaultMocks)
+
+const state = {
+  names: {
+    testKey: 'World',
+  },
+}
+
+const fakeStore = mockStore()(state)
+const dispatch = fakeStore.dispatch as jest.Mock<void>
+
+const storeProp = {
+  store: fakeStore,
+}
 
 describe('<<%= options.componentName %> />', () => {
   beforeEach(() => {
@@ -42,9 +62,18 @@ describe('<<%= options.componentName %> />', () => {
 
   describe('snapshots', () => {
     it('renders correctly', () => {
-      const <%= options.componentName %> = importModule()
+      const <%= options.componentName %>Base = importBase()
       const tree = renderer.create(
-        <<%= options.componentName %> onPress={jest.fn()} />,
+        <<%= options.componentName %>Base name='World' onPress={jest.fn()} />,
+      )
+
+      expect(tree).toMatchSnapshot()
+    })
+
+    it('renders correctly with store', () => {
+      const <%= options.componentName %> = importModule() as any
+      const tree = renderer.create(
+        <<%= options.componentName %> key='testKey' { ...storeProp } />,
       )
 
       expect(tree).toMatchSnapshot()
@@ -55,12 +84,15 @@ describe('<<%= options.componentName %> />', () => {
     it('should call onPress()', () => {
       const pressHandler = jest.fn()
 
-      const <%= options.componentName %> = importModule()
+      jest.unmock('reactxp')
+      const originalRX = require('reactxp')
+
+      const <%= options.componentName %>Base = importBase()
       const wrapper = shallow(
-        <<%= options.componentName %> onPress={pressHandler} />,
+        <<%= options.componentName %>Base name='World' onPress={pressHandler} />,
       )
 
-      wrapper.find(RX.Button).simulate('press')
+      wrapper.find(originalRX.Button).simulate('press')
 
       expect(pressHandler).toHaveBeenCalledTimes(1)
     })

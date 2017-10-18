@@ -2,15 +2,22 @@
   "name": "generator-reactxp",
   "version": "0.1.1",
   "description": "",
-  "files": [
-    "generators",
-    "base"
-  ],
   "keywords": [
     "yeoman-generator"
   ],
   "dependencies": {
     "ejs": "^2.5.7",
     "yeoman-generator": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@storybook/addon-actions": "*",
+    "@storybook/react-native": "*",
+    "enzyme": "*",
+    "enzyme-adapter-react-16": "*",
+    "jest": "*",
+    "react": "^16.0.0",
+    "react-native": "*",
+    "react-test-renderer": "*",
+    "reactxp": "*"
   }
 }

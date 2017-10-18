@@ -1,0 +1,46 @@
+
+import * as React from 'react'
+import * as RX from 'reactxp'
+import { connect, Dispatch } from 'react-redux'
+
+import styles from './<%= options.componentName %>.styles'
+
+interface OwnProps {
+  propKey: string
+}
+
+interface StateProps {
+  name: string
+}
+
+interface DispatchProps {
+  onPress: () => void
+}
+
+type Props = StateProps & DispatchProps & Partial<OwnProps> & React.Props<any>
+
+export const <%= options.componentName %>Base = ({ name, onPress }: Props) => (
+  <RX.View style={styles.container}>
+    <RX.Button style={styles.button} onPress={onPress}>
+      <RX.Text style={styles.buttonText}>
+        Hello, { name }
+      </RX.Text>
+    </RX.Button>
+  </RX.View>
+)
+
+const mapStateToProps = (state, { propKey }: OwnProps): StateProps => {
+  const { names: { [propKey]: name } } = state
+
+  return {
+    name,
+  }
+}
+
+const mapDispatchToProps = (dispatch: Dispatch<any>, { propKey }: OwnProps): DispatchProps => {
+  return {
+    onPress: () => dispatch({ type: 'RANDOMIZE_NAME', propKey }),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(<%= options.componentName %>Base)
